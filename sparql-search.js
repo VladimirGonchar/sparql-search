@@ -1,26 +1,70 @@
 $(document).ready(function(){
-    var $searchField = $(".search-field"),
+    var MAX_TEXT_LENGTH = 400,
+
+        $searchField = $(".search-field"),
         $searchSubmit = $(".search-submit"),
         $searchResultsContainer = $(".search-results");
 
     $searchSubmit.on("click", function(){
         var searchText = $searchField.val();
         if(searchText){
-            SparqlSearchService.search(searchText);
+            SparqlSearchService.search(searchText).
+                then(renderSearchResults);
         }
     })
+
+    function renderSearchResults(response, status){
+        $searchResultsContainer.empty();
+
+        var variables = response.head.vars;
+
+        response.results.bindings.forEach(function(item){
+            var $searchResultsItem = $("<div/>", {
+                class: "list-group-item "
+            });
+
+            variables.forEach(function(variable){
+                if(item[variable]){
+                    if(item[variable].type == "uri"){
+                        $("<a/>",{
+                            class: "list-group-item-text",
+                            href: item[variable].value,
+                            text: item[variable].value
+                        }).appendTo($searchResultsItem);
+                    } else {
+                        $("<div/>",{
+                            class: "list-group-item-text",
+                            text: trimText(item[variable].value)
+                        }).appendTo($searchResultsItem);
+                    }
+                }
+            })
+
+            $searchResultsItem.appendTo($searchResultsContainer);
+
+        });
+    };
+
+    function trimText(text){
+        if(text.length > MAX_TEXT_LENGTH){
+            return text.slice(0, MAX_TEXT_LENGTH) + "...";
+        } else {
+            return text;
+        }
+    };
+
 });
 
 var SparqlSearchService = {
 
-    SEARCH_LIMIT_PER_REPO: 5,
+    SEARCH_LIMIT_PER_REPO: 10,
 
     search: function(searchText){
 
         return $.ajax("http://data.open.ac.uk/sparql", {
             dataType: "json",
             crossDomain: true,
-            data: "query=SELECT ?x ?description (GROUP_CONCAT(?type) as ?types) ?url"
+            data: "query=SELECT ?x ?url (GROUP_CONCAT(?type) as ?types) ?description "
                  + " WHERE {"
                  + " ?x <http://purl.org/dc/terms/description> ?description."
                  + " ?x a ?type."
@@ -29,30 +73,6 @@ var SparqlSearchService = {
                  + "}"
                  + " group by ?x ?description ?url limit " + SparqlSearchService.SEARCH_LIMIT_PER_REPO,
             processData: false,
-            success: function(response, status){
-                var variables = response.head.vars;
-
-                response.results.bindings.forEach(function(item){
-                    var $item = $("div").addClass("search-results-item");
-
-                    variables.foreach(function(variable){
-                        if(item[variable]){
-                            $("a",{
-                                class: "node-path",
-                                href: ""
-                            }).addClass("node-path").attr("href", )
-                        }
-                    })
-
-                    $("a",{
-                        class: "node-path",
-                        href: ""
-                    }).addClass("node-path").attr("href", )
-
-                });
-
-                debugger;
-            },
             error: function(jqXHR, status, error){
                 debugger;
             }
