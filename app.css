@@ -5,3 +5,8 @@
 .list-group-item-text.text {
     margin-top: 10px;
 }
+
+.logo img{
+    display: block;
+    margin: 40px auto;
+}
