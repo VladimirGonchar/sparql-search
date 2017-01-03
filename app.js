@@ -61,7 +61,7 @@ var SparqlSearchService = {
 
     search: function(searchText){
 
-        return $.ajax("http://data.open.ac.uk/sparql", {
+        return $.ajax("https://data.open.ac.uk/sparql", {
             dataType: "json",
             crossDomain: true,
             data: "query=SELECT ?x ?url (GROUP_CONCAT(?type) as ?types) ?description "
