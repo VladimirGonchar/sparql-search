@@ -33,8 +33,8 @@ $(document).ready(function(){
                         }).appendTo($searchResultsItem);
                     } else {
                         $("<div/>",{
-                            class: "list-group-item-text",
-                            text: trimText(item[variable].value)
+                            class: "list-group-item-text text",
+                            html: trimText(item[variable].value)
                         }).appendTo($searchResultsItem);
                     }
                 }

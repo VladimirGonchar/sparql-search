@@ -1,3 +1,7 @@
 .list-group-item-text {
     display: block;
 }
+
+.list-group-item-text.text {
+    margin-top: 10px;
+}
