@@ -10,3 +10,8 @@
     display: block;
     margin: 40px auto;
 }
+
+.search-box {
+    max-width: 850px;
+    margin: 20px auto;
+}
