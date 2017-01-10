@@ -4,27 +4,39 @@ $(document).ready(function(){
         $searchField = $(".search-field"),
         $searchSubmit = $(".search-submit"),
         $searchResultsContainer = $(".search-results"),
-        $facetsContainer = $(".fasets");
+        $facetsContainer = $(".fasets")
+        $spinner = $(".spinner");
 
     $searchSubmit.on("click", function(){
         var searchText = $searchField.val();
         if(searchText){
-            SparqlSearchService.search(searchText).
-                then(renderSearchResults);
-            SparqlSearchService.searchFacets(searchText).
-                then(renderFacets);
+            $spinner.show();
+            $.when(
+                SparqlSearchService.search(searchText).
+                    then(renderSearchResults),
+                SparqlSearchService.searchFacets(searchText).
+                    then(renderFacets))
+            .always(function(){
+                $spinner.hide();
+            })
         }
     });
 
     $facetsContainer.on("click", ".facet", function(e){
         e.preventDefault();
+
         var facetIri = $(e.target).attr("href");
         var searchText = $searchField.val();
 
-        SparqlSearchService.search(searchText, facetIri).
-            then(renderSearchResults);
-        SparqlSearchService.searchFacets(searchText, facetIri).
-            then(renderFacets);
+        $spinner.show();
+        $.when(
+            SparqlSearchService.search(searchText, facetIri).
+                then(renderSearchResults),
+            SparqlSearchService.searchFacets(searchText, facetIri).
+                then(renderFacets))
+        .always(function(){
+            $spinner.hide();
+        })
     });
 
     function renderSearchResults(response, status){
