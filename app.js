@@ -51,15 +51,17 @@ $(document).ready(function(){
 
             variables.forEach(function(variable){
                 if(item[variable]){
-                    if(item[variable].type == "uri"){
+                    if(item[variable].value.startsWith("http:")
+                        || item[variable].value.startsWith("https:")){
+
                         $("<a/>",{
-                            class: "list-group-item-text",
+                            class: "list-group-item-text " + variable,
                             href: item[variable].value,
                             text: item[variable].value
                         }).appendTo($searchResultsItem);
                     } else {
                         $("<div/>",{
-                            class: "list-group-item-text text",
+                            class: "list-group-item-text text " + variable,
                             html: trimText(item[variable].value)
                         }).appendTo($searchResultsItem);
                     }

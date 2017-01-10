@@ -2,6 +2,10 @@
     display: block;
 }
 
+a.list-group-item-text{
+    margin-top: 2px;
+}
+
 .list-group-item-text.text {
     margin-top: 10px;
 }
